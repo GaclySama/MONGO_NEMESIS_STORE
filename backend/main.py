@@ -1,7 +1,7 @@
 import uvicorn
-from fastapi import FastAPI, Depends, HTTPException, security
-from fastapi.security import HTTPBearer
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from routes import user, product
 
 # * DESCRIPCIÓN DE API
@@ -31,10 +31,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/mensaje")
-async def root():
-    return "Hola FastAPI con Firebase"
-
-
 if __name__ == "__main__":
-    uvicorn.run("main:app",host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)

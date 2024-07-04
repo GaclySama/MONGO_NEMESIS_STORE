@@ -30,7 +30,8 @@ const Registro = () => {
     const cargarPantalla = async () => {
         let validar = false;
         handleClick();
-        validar = await newUser(name, lastname, email.trim().toLowerCase(), password.trim());
+        respuesta = await newUser(name, lastname, email.trim().toLowerCase(), password.trim());
+        validar= respuesta[0];
 
         validar ?
             setTimeout(() => {
@@ -38,7 +39,7 @@ const Registro = () => {
                 return notificaSuccessRegistro();//Registo valido
             }, 2000)
             :
-            notificaErrorRegistro();//registro invalido
+            notificaErrorRegistro(respuesta[1], '');//registro invalido
     };
 
     
@@ -54,16 +55,6 @@ const Registro = () => {
 
         cargarPantalla();
     }
-
-    const saveData = async () => {
-        await AsyncStorage.setItem('NAME', name);
-        await AsyncStorage.setItem('LASTNAME', lastname);
-        await AsyncStorage.setItem('EMAIL', email);
-        await AsyncStorage.setItem('PASSWORD', password);
-        console.log(':yes');
-        navigation.goBack();
-    }
-
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -84,7 +75,6 @@ const Registro = () => {
             <TextInput style={styles.Input} secureTextEntry placeholder='Contraseña' value={password} onChangeText={txt => setPassword(txt)} />
             <TextInput style={styles.Input} secureTextEntry placeholder='Confirmar contraseña' value={confirmpass} onChangeText={txt => setConfirmpass(txt)} />
             <Pressable style={[styles.Btn, { backgroundColor: disabled ? '#b2bec3' : '#00a8ff'}]} onPress={() => { validateUser(); }} disabled={buttonDisabled} ><Text style={styles.BtnText}>Crear Cuenta</Text></Pressable>
-            {/* <Pressable style={styles.Btn} onPress={() => { validateUser(); }} disabled={buttonDisabled} ><Text style={styles.BtnText}>Crear Cuenta</Text></Pressable> */}
             <Text style={styles.Create} onPress={() => navigation.navigate('Login')}>¿Ya tienes cuenta?</Text>
         </View>
     );
