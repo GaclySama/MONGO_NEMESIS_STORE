@@ -29,7 +29,7 @@ const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
 
   const checkUserStatus = async () => {
     let isUserLoggedIn = false;
-    const status = await AsyncStorage.getItem('IS_USER_LOGGED_IN');
+    const status = await AsyncStorage.getItem('@user');
     /* console.log(status); si el usuario esta logeado */
     if (status == null) {
       isUserLoggedIn = false;

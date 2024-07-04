@@ -43,7 +43,9 @@ const Login = () => {
     const cargarPantalla = async () => {
         let validar = false;
         handleClick();
-        validar = await login(email.trim().toLowerCase(), password.trim());
+        respuesta = await login(email.trim().toLowerCase(), password.trim());
+        validar = respuesta[0]
+        
 
         validar ?
             setTimeout(() => {
@@ -52,7 +54,7 @@ const Login = () => {
                 return notificaSuccessIngreso();//acceso valido
             }, 2000)
             :
-            notificaErrorIngreso();//acceso invalido
+            notificaErrorIngreso(respuesta[1], '');//acceso invalido
     };
 
     // * Validación de login con Regex
@@ -64,8 +66,10 @@ const Login = () => {
     }
 
     const getData = async () => {
-        await getProducts();
-        navigation.navigate('Main');
+        let res = false;
+        res = await getProducts();
+        res ? navigation.navigate('Main') : navigation.navigate('Login');
+
     }
 
     return (

@@ -14,11 +14,23 @@ export const newUser = async (pName, pLastname, pEmail, pPassword) => {
 
     try {
         const res = await api.post('/user/new', data);
-        // console.log(res);
-        return true;
+        if (res.status === 201) {
+          return [true];
+      }
     } catch (error) {
-        console.error("Error API:", error.message);
-        return false;
+      let err;
+      if (error.response) {
+          err = error.response.data.detail || 'Error desconocido';
+      } else if (error.request) {
+          err = 'No se recibió respuesta del servidor';
+      } else {
+          err = 'Error en la configuración de la solicitud';
+      }
+
+        return [
+          false,
+          err
+        ];
     }
 }
 
@@ -32,16 +44,26 @@ export const login = async (pEmail, pPassword) => {
     try {
         const res = await api.post('/user/login', data);
 
-        // console.log(res);
         if (res.status === 200) {
             const token = res.data.authenticated;
             const user = res.data.user;
             await AsyncStorage.setItem('@accessToken', token);
             await AsyncStorage.setItem('@user', JSON.stringify(user));
-            return true;
+            return [true];
         }
     } catch (error) {
-        console.error("Error API:", error.message);
-        return false;
+      let err;
+      if (error.response) {
+          err = error.response.data.detail || 'Error desconocido';
+      } else if (error.request) {
+          err = 'No se recibió respuesta del servidor';
+      } else {
+          err = 'Error en la configuración de la solicitud';
+      }
+
+        return [
+          false,
+          err
+        ];
     }
 }
