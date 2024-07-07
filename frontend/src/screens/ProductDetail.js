@@ -109,13 +109,10 @@ const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
             if (checkUserStatus()) {
               dispatch(
                 addItemToCart({
-                  category: route.params.data.category,
-                  stock: route.params.data.stock,
-                  id: route.params.data.id,
+                  id: route.params.data._id,
                   imagen: route.params.data.imagen,
                   price: route.params.data.price,
                   qty: qty,
-                  rating: route.params.data.rating,
                   title: route.params.data.title,
                 }),
               );
