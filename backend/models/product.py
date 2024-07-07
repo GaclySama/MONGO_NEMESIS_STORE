@@ -1,23 +1,42 @@
 from pydantic import BaseModel, Field
-from enum import Enum
+from typing import List
 
 
-class CategoryEnum(str, Enum):
-    hombre = "hombre"
-    mujer = "mujer"
-    niña = "niña"
-    niño = "niño"
+class JsonProduct(BaseModel):
+    id: str = Field(...)
+    title: str = Field(...)
+    qty: int = Field(...)
+    imagen: str = Field(...)
+    price: float = Field(...)
 
 
-class AvalibleEnum:
-    disponible = 1
-    no_disponible = 0
-
+class JsonOrder(BaseModel):
+    userId: str = Field(...)
+    email: str = Field(...)
+    order: List[JsonProduct]
+    amount: str = Field(...)
+    orderId: str = Field(...)
+    orderStatus: str = Field(...)
+    createdAt: str = Field(...)
 
 class Product(BaseModel):
-    imagen: str = Field(...)
+    id: str = Field(...)
     title: str = Field(...)
-    stock: int = Field(...)
+    qty: int = Field(...)
     price: float = Field(...)
-    category: CategoryEnum = Field(...)
-    available: AvalibleEnum = Field(...)
+
+class ListProducts(BaseModel):
+    orderId: str = Field(...)
+    createAt: str = Field(...)
+    products: List[Product]
+    amount: str = Field(...)
+    orderStaus: str = Field(...)
+
+
+class NewOrder(BaseModel):
+    email: str = Field(...)
+    orders: List[JsonProduct]
+
+
+
+

@@ -67,3 +67,15 @@ export const login = async (pEmail, pPassword) => {
         ];
     }
 }
+
+
+export const loadUser = async () => {
+  try {
+    const userData = await AsyncStorage.getItem('@user');
+    if (userData) {
+      return JSON.parse(userData);
+    }
+  } catch (error) {
+    console.error('Failed to load user from AsyncStorage:', error);
+  }
+}

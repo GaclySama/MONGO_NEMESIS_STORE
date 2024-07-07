@@ -24,6 +24,8 @@ import CustomButton from '../common/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {orderItem} from '../redux/slices/OrderSlice';
 import Pagado from './OrdenPagado';
+import { loadUser } from '../services/user';
+import { createOrder } from '../services/product';
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -32,13 +34,21 @@ const Checkout = () => {
   const [selectedMethod, setSelectedMethod] = useState(0);
   const isFocused = useIsFocused();
   const [modalVisible, setModalVisible] = useState(true);
-  const [selectedAddress, setSelectedAddress] = useState(
-    'Please Select Address',
-  );
+  const [ user,  setUser ] = useState({_id: '', email : ''});
   const dispatch = useDispatch();
 
   //almacenando en set cartItems
   useEffect(() => {
+    const User = async () => {
+      try {
+          const { _id, email } = await loadUser();
+          setUser({_id, email});
+      } catch (error) {
+        console.error('Failed to load user from AsyncStorage:', error);
+      }
+    };
+
+    User();
     setCartItems(items.data);
   }, [items]);
 
@@ -57,12 +67,13 @@ const Checkout = () => {
   const IVA = getTotal() * (porcentajeIVA / 100);
   const TotalIVA = parseInt(getTotal()) + IVA;
 
-  const orderPlace = paymentId => {
+  const orderPlace = () => {
     const day = new Date().getDate();
     const month = new Date().getMonth() + 1;
     const year = new Date().getFullYear();
     const hours = new Date().getHours();
     const minutes = new Date().getMinutes();
+    const seconds = new Date().getMinutes();
     let ampm = '';
     if (hours > 12) {
       ampm = 'pm';
@@ -71,25 +82,20 @@ const Checkout = () => {
     }
 
     const data = {
-      items: cartItems,
+      userId: user._id,
+      email: user.email,
+      order: cartItems,
       amount: '$' + TotalProdu,
-      address: selectedAddress,
-      paymentId: paymentId,
-      paymentStatus: selectedMethod == 3 ? 'Pendiente' : 'Aprobado',
-      createdAt:
-        day +
-        '/' +
-        month +
-        '/' +
-        year +
-        ' ' +
-        hours +
-        ':' +
-        minutes +
-        ' ' +
-        ampm,
+      orderId: `${day}${month}${year}${hours}${minutes}${seconds}`,
+      orderStatus: selectedMethod == 3 ? 'Pendiente' : 'Aprobado',
+      createdAt: day +'/' +month +'/' +year +' ' +hours +':' +minutes +' ' +ampm,
     };
     dispatch(orderItem(data));
+
+    setTimeout(() => {
+      createOrder(data);
+    }, 1000);
+
     dispatch(emptyCart([]));
     navigation.navigate('OrderSuccess');
   };
@@ -162,6 +168,7 @@ const Checkout = () => {
             <TouchableOpacity
               style={styles.checkout}
               onPress={() => {
+                  console.log('Pagar');
                   orderPlace();
                   <Pagado modalVisible={modalVisible} setModalVisible={setModalVisible}/>
                 
