@@ -3,30 +3,29 @@ import React, {useState, useEffect} from 'react';
 import Header from '../../common/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import { loadUser } from '../../services/user';
 
 const User = () => {
   const [user, setUser] = useState({ email: '', name: '' });
   const navigation = useNavigation();
 
   useEffect(() => {
-    const loadUser = async () => {
+    const User = async () => {
       try {
-        const userData = await AsyncStorage.getItem('@user');
-        if (userData) {
-          const { email, name } = JSON.parse(userData);
+          const { email, name } = await loadUser();
           setUser({ email, name });
-        }
       } catch (error) {
         console.error('Failed to load user from AsyncStorage:', error);
       }
     };
 
-    loadUser();
+    User();
   }, []);
 
   const logout = async () => {
     try {
-      await AsyncStorage.removeItem('@accessToken');
+      const keys = ['@accessToken', '@user', '@products']
+      await AsyncStorage.multiRemove(keys);
       navigation.navigate('Login');
     } catch (error) {
       console.error('Failed to logout:', error);

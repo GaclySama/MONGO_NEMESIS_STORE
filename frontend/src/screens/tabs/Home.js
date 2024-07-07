@@ -15,21 +15,12 @@ import Header from '../../common/Header';
 import ProductCard from '../../common/ProductCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-// TODO: 
-// TODO: OJO. HAY QUE AÑADIR UNA CARGA EN PANTALLA MIENTRAS SE BUSCAN LOS PRODUCTOS
-// TODO: EN ASYNC
-
 const Home = () => {
 
   const navigation = useNavigation();
-  /* const categoria = ['todos', 'Hombres', 'Mujeres', 'Niños'] */
   const [selected, setSelected] = useState('Todo');
   const tags = ['Todo', 'Hombre', 'Mujer', 'Niño', 'Niña'];
   const [products, setProducts] = useState([]);
-  // const arrayMajueres = products.data.filter((e) => {
-  //   return e.category == 'mujer'
-  // }) 
   const dispatch = useDispatch();
 
 

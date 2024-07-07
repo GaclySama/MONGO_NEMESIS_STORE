@@ -181,7 +181,7 @@ let generatePdf = async () => {
               />
               <View style={{padding:20}}>
               <Text><Text style={{fontWeight:'800'}}>Total:</Text> {item.amount}</Text>
-              <Text><Text style={{fontWeight:'800'}}>Estatus:</Text> {item.paymentStatus}</Text>
+              <Text><Text style={{fontWeight:'800'}}>Estatus:</Text> {item.orderStatus}</Text>
               <Text><Text style={{fontWeight:'800'}}>Fecha:</Text> {item.createdAt}</Text>
               </View>
 

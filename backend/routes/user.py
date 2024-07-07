@@ -106,17 +106,15 @@ async def sing_in(login_data: LoginSchema):
         if not user_data:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No hay cuentas con ese email")
 
-        user_data["_id"] = str(user_data["_id"])  # Convertir ObjectId a str
-        user = User(**user_data)
-
-        if not verify_password(password, user.password):
+        if not verify_password(password, user_data['password']):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Correo o contraseña incorrecto")
 
+        del user_data["password"]
 
         return JSONResponse(
           content={
               "authenticated": "true",
-              "user": user.model_dump(by_alias=True)
+              "user": user_data
           },
           status_code=status.HTTP_200_OK,
     )
@@ -125,6 +123,7 @@ async def sing_in(login_data: LoginSchema):
         logger.error(f"Error sing_in: {e}")
         raise HTTPException(status_code=e.status_code, detail=e.detail)
     except Exception as e:
+        logger.error(f"Error sing_in: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error: {e}"
         )
