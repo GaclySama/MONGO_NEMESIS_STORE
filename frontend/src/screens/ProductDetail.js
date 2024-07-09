@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   banner: {
     width: '100%',
     height: 300,
-    resizeMode: 'center',
+    resizeMode: 'contain',
     marginTop:20
   },
   title: {

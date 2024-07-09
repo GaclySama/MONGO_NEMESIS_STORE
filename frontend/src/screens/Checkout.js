@@ -5,9 +5,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Dimensions,
-  Button,
-  SectionList
+  Dimensions
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../common/Header';
@@ -25,7 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {orderItem} from '../redux/slices/OrderSlice';
 import Pagado from './OrdenPagado';
 import { loadUser } from '../services/user';
-import { createOrder } from '../services/product';
+import { createOrder } from '../services/order';
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -81,12 +79,16 @@ const Checkout = () => {
       ampm = 'am';
     }
 
+    //Generador de numeros random
+    let numb = Math.floor(Math.random() * 90000) + 10000;
+
+
     const data = {
       userId: user._id,
       email: user.email,
       order: cartItems,
       amount: '$' + TotalProdu,
-      orderId: `${day}${month}${year}${hours}${minutes}${seconds}`,
+      orderId: numb.toString(),
       orderStatus: selectedMethod == 3 ? 'Pendiente' : 'Aprobado',
       createdAt: day +'/' +month +'/' +year +' ' +hours +':' +minutes +' ' +ampm,
     };
@@ -168,7 +170,6 @@ const Checkout = () => {
             <TouchableOpacity
               style={styles.checkout}
               onPress={() => {
-                  console.log('Pagar');
                   orderPlace();
                   <Pagado modalVisible={modalVisible} setModalVisible={setModalVisible}/>
                 

@@ -98,6 +98,54 @@ import Toast from 'react-native-toast-message';
     })
   };
 
+  const notificaAgregarProducto = async (titulo = 'Producto agregado', mensaje= '¡El producto se ha agregado exitosamente!', time= 2000) => {
+    setTimeout(()=> {
+        Toast.show({
+            type:'info',
+            text1:titulo,
+            text2:mensaje,
+            autoHide: true,
+            visibilityTime: time,
+        })
+    })
+  };
+
+  const notificaAgregarProductoError = async (titulo = 'Producto no agregado', mensaje= 'Ah ocurrido un error al agregar el producto', time= 2000) => {
+    setTimeout(()=> {
+        Toast.show({
+            type:'error',
+            text1:titulo,
+            text2:mensaje,
+            autoHide: true,
+            visibilityTime: time,
+        })
+    })
+  };
+
+  const notificaErrorActualizar = async (titulo = 'Error al Actualizar', mensaje= 'No ha ingresado ninguna información', time= 2000) => {
+    setTimeout(()=> {
+        Toast.show({
+            type:'error',
+            text1:titulo,
+            text2:mensaje,
+            autoHide: true,
+            visibilityTime: time,
+        })
+    })
+  };
+
+  const notificaErrorAgregar = async (titulo = 'Error al Agregar', mensaje= 'Debe rellenar todos los campos', time= 2000) => {
+    setTimeout(()=> {
+        Toast.show({
+            type:'error',
+            text1:titulo,
+            text2:mensaje,
+            autoHide: true,
+            visibilityTime: time,
+        })
+    })
+  };
+
 export {notificaErrorIngreso, 
         notificaErrorRegistro, 
         notificaInfo, 
@@ -105,4 +153,9 @@ export {notificaErrorIngreso,
         notificaSuccessRegistro, 
         notificaInfoRecover,  
         notificaInfoNoRecover,
-        notificaInfoWishList};
+        notificaInfoWishList,
+        notificaAgregarProducto,
+        notificaAgregarProductoError,
+        notificaErrorActualizar,
+        notificaErrorAgregar
+      };
