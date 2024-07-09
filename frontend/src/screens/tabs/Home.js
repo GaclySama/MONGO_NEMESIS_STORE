@@ -86,7 +86,7 @@ const Home = () => {
         ListHeaderComponent={
           <View style={styles.containerSelect}>
             <Image source={require('../../images/banner.png')}
-              style={{ width: '97%', height: 200, alignItems: 'center', justifyContent: 'center', margin: 5, borderRadius: 15 }}
+              style={{ width: '97%', height: 200, alignItems: 'center', margin: 5, borderRadius: 15 }}
             />
             <FlatList
               horizontal
@@ -94,32 +94,32 @@ const Home = () => {
               data={tags}
               renderItem={({ item }) => {
                 return (
-                  <View style={{ left:'33%'}}>
-                  <TouchableOpacity onPress={() => {
-                    setSelected(item);
-                    setSelected({ valor: item });
-                  }}>
-                    <Text
-                      style={[
-                        styles.tagText,
-                        selected == item ? styles.isSelected : null,
-                        selected.valor == item ? styles.isSelected : null,
-                      ]}
-                    >
-                      {item}
-                    </Text>
-                  </TouchableOpacity>
+                  <View style={{marginHorizontal:12}}>
+                    <TouchableOpacity 
+                      onPress={() => {
+                      setSelected(item);
+                      setSelected({ valor: item });
+                    }}>
+                      <Text
+                        style={[
+                          styles.tagText,
+                          selected == item ? styles.isSelected : null,
+                          selected.valor == item ? styles.isSelected : null,
+                        ]}
+                      >
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 );
               }}
-              contentContainerStyle={styles.container}
             />
           </View>
         }
         data={
           selected.valor == null && selected.valor == undefined
             ? products.data
-            : selected.valor === 'Todo'
+            : selected.valor === 'Todo' 
               ? products.data
               : selected.valor === 'Mujer'
                 ? products.data.filter(item => item.category === 'mujer')
@@ -148,10 +148,6 @@ const Home = () => {
 
 export default Home;
 const styles = StyleSheet.create({
-  isSelected: {
-    backgroundColor: "#E96E6E",
-    color: "#FFFFFF",
-  },
   containerTags: {
     marginVertical: 5,
   },
@@ -187,19 +183,18 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 18,
+    fontWeight:'700',
     borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    marginHorizontal: 3,
-    backgroundColor: "#DFDCDC",
-    color: "#938F8F",
-    fontWeight: "700",
+    paddingVertical:15,
+    paddingHorizontal:20,
+    backgroundColor: "#95afc0",
+    color: "#000"
   },
   isSelected: {
-    backgroundColor: "#E96E6E",
-    color: "#FFFFFF",
+    backgroundColor: "#f9ca24",
+    color: "#000",
   },
   containerSelect: {
-    marginVertical: 5,
+    marginVertical: 5
   },
 });

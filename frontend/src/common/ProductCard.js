@@ -14,7 +14,9 @@ const ProductCard = ({ item, handleProductClick, toggleFavorite }) => {
         handleProductClick(item);
       }}
     >
-      <Image source={{ uri: item.imagen }} style={styles.coverImage} />
+      <View style={{width:170}}>      
+        <Image source={{ uri: item.imagen }} style={styles.coverImage}  />
+      </View>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.price}>${item.price}</Text>
@@ -30,14 +32,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
     marginVertical: 10,
+    justifyContent:'center', 
+    alignItems:'center'
   },
   coverImage: {
-    height: 200,
-    width: 165,
-    borderRadius: 20,
     position: "relative",
+    height: 250,
+    width:'100%',
+    borderRadius: 20
   },
   contentContainer: {
+    justifyContent:'center',
+    alignItems: 'center',
     padding: 10,
   },
   title: {
