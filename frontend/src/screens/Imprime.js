@@ -5,30 +5,56 @@ import Header from '../common/Header';
 import {useSelector} from 'react-redux';
 import * as Print from 'expo-print';
 import { shareAsync } from 'expo-sharing';
+import { useRoute } from '@react-navigation/native';
 
 const Imprime = ({navigation}) => {
-
+  const route = useRoute();
+  const orders = route.params?.orders;
   //variables por defecto
+  /* const ordersList = useSelector(state => state.order);
+  console.log(ordersList); */
 
-  const ordersList = useSelector(state => state.order);
-
-  const datoss = JSON.parse(JSON.stringify(ordersList.data));
+  const datoss = JSON.parse(JSON.stringify(orders));
   
-  const amount = datoss.length > 0 ? datoss[0].amount : '';
-  const fecha = datoss.length > 0 ? datoss[0].createdAt : ''; 
+  let tablaFinal = '';
+  let tablaFecha = '';
+  let tablaFmonto = '';
+  let TablaForderId = '';
 
-  const tabla2 = () => {
-    let tabla = ''; // Variable para almacenar el contenido de la tabla
+  const tabla2 = (index) => {
+    /* let tabla = ''; */ // Variable para almacenar el contenido de la tabla
+    
+    let valor2 = (index === undefined) ? 0 : index;
 
-    if (datoss.length > 0 && datoss[0].items) {
-    datoss[0].items.map((item, index) => {
+    // console.log(valor2);
+    
+    if (datoss.length > 0 ) {
+
+      //variable de monto
+      let orderId = datoss[valor2].orderId;
+
+      //variable de monto
+      let monto = datoss[valor2].amount;
+
+      //variable de fecha
+      let fecha = datoss[valor2].createdAt;
+
+      TablaForderId = `<td><span>${orderId}</span></td>`
+      tablaFmonto = `<td><span>${monto}</span></td>`
+      tablaFecha = `<td><span>${fecha}</span></td>`
+
+      //Reseto de tabla
+      tablaFinal = '';
+
+      //Creacion de nueva tabla
+      datoss[valor2].products.map((item, index) => {
       // Accede a las propiedades de cada elemento del array
-      const nombre = item.title;
-      const cantidad = item.qty;
-      const precio = item.price;
-  
+      let nombre = item.title;
+      let cantidad = item.qty;
+      let precio = item.price;
+
       // Agrega una fila a la tabla con los datos del item
-      tabla += `
+      tablaFinal += `
         <tr>
           <td><span>${nombre}</span></td>
           <td><span>${cantidad}</span></td>
@@ -37,17 +63,14 @@ const Imprime = ({navigation}) => {
       `;
   
       // Realiza las operaciones deseadas con los datos
-      console.log(`Item ${index + 1}: ${nombre}, Cantidad: ${cantidad}, Precio: ${precio}`);
+      //console.log(`Item ${index + 1}: ${nombre}, Cantidad: ${cantidad}, Precio: ${precio}`);
     })
   };
   
-    return tabla; // Retorna el contenido de la tabla
+     // Retorna el contenido de la tabla
   };
 
-  const Producto = {
-    Fecha: fecha,
-    Total: amount,
-  }
+  tabla2();
 
   const data = {
     name: 'Nemesis Store',
@@ -57,7 +80,7 @@ const Imprime = ({navigation}) => {
 
 
   //formato PDF en html
-  const html = `
+  const html = () =>`
     <html>
           <head>
             <meta charset="utf-8">
@@ -91,15 +114,15 @@ const Imprime = ({navigation}) => {
               <table class="meta">
                 <tr>
                   <th><span>Factura #</span></th>
-                  <td><span>101138</span></td>
+                  ${TablaForderId}
                 </tr>
                 <tr>
                   <th><span>Fecha</span></th>
-                  <td><span>${Producto.Fecha}</span></td>
+                  ${tablaFecha}
                 </tr>
                 <tr>
                   <th><span>Monto a Pagar</span></th>
-                  <td><span>${Producto.Total}</span></td>
+                  ${tablaFmonto}
                 </tr>
               </table>
               <table class="inventory">
@@ -111,14 +134,14 @@ const Imprime = ({navigation}) => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${tabla2()}
+                  ${tablaFinal}
                 </tbody>
               </table>
               <table class="balance">
                 
                 <tr>
                   <th><span>Monto a Pagar</span></th>
-                  <td><span>${Producto.Total}</span></td>
+                  ${tablaFmonto}
                 </tr>
               </table>
             </article>
@@ -135,14 +158,12 @@ const Imprime = ({navigation}) => {
 //funcion para generar pdf
 let generatePdf = async () => {
     const file =  await Print.printToFileAsync({
-      html: html,
+      html: html(),
       base64: false
     });
 
     await shareAsync(file.uri);
   };
-
-  
 
   return (
     <View style={styles.container}>
@@ -153,14 +174,15 @@ let generatePdf = async () => {
           navigation.goBack();
         }}
       />
-      <FlatList
-        data={ordersList.data}
+        <FlatList
+        data={datoss}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => {
           return (
             <View style={styles.orderItem}>
+              
               <FlatList
-                data={item.items}
+                data={item.products}
                 renderItem={({item, index}) => {
                   return (
                         <View style={styles.orderItem2}>
@@ -186,17 +208,14 @@ let generatePdf = async () => {
               </View>
 
               <View style={{justifyContent:'center', alignItems:'center', bottom:'3%'}}>
-              <Pressable style={styles.btnPDF} onPress={generatePdf}><Text style={styles.btnText}>Generar PDF</Text></Pressable>
+
+              <Pressable style={styles.btnPDF} onPress={() => {  tabla2(index); generatePdf();} }><Text style={styles.btnText}>Generar PDF</Text></Pressable>
+              
               </View>
             </View>
           );
         }}
       />
-      {datoss.length < 1 && (
-          <View style={styles.noItems}>
-            <Text style={{fontSize:20}}>No hay pedidos</Text>
-          </View>
-        )}
     </View>
   );
 };
