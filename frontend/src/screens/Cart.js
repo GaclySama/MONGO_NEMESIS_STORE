@@ -64,19 +64,17 @@ const Cart = () => {
                   <Text style={styles.price}>{'$' + item.price}</Text>
                 </View>
                 <View style={styles.qtyview}>
+                <Text style={styles.qty}>Cantidad: {item.qty}</Text>
                   <TouchableOpacity
                     style={styles.btn}
                     onPress={() => {
-                      if (item.qty > 1) {
-                        dispatch(reduceItemFromCart(item));
-                      } else {
+                      
                         dispatch(removeItemFromCart(index));
-                      }
+                     
                     }}
                   >
-                    <Text style={{fontSize: 18, fontWeight: '600'}}>-</Text>
+                    <Text style={{ color:'white', fontSize: 20, fontWeight: '800'}}>X</Text>
                   </TouchableOpacity>
-                  <Text style={styles.qty}>Cantidad: {item.qty}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -133,11 +131,13 @@ const styles = StyleSheet.create({
   },
   btn: {
     padding: 5,
-    width: 30,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 0.5,
-    borderRadius: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+    backgroundColor:'red'
   },
   qty: {
     marginHorizontal: 10,

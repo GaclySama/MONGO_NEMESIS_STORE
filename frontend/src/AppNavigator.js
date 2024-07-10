@@ -8,6 +8,7 @@ import Cart from './screens/Cart';
 import Login from './screens/Login';
 import Registro from './screens/Registro';
 import OrderSuccess from './screens/OrdenPagado';
+import PagoError from './screens/Ordenerror';
 import Inicio from './screens/Inicio';
 import Checkout from './screens/Checkout';
 import Actualizar from './screens/Actualizar';
@@ -58,6 +59,11 @@ const AppNavigator = () => {
         <Stack.Screen
           name="OrderSuccess"
           component={OrderSuccess}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OrderFailed"
+          component={PagoError}
           options={{ headerShown: false }}
         />
         <Stack.Screen

@@ -1,33 +1,34 @@
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, Text, View, Image, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 
-function Pagado () {
+function PagoError () {
     const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(true);
-
+    const route = useRoute();
+    const mensaje = route.params?.mensaje;
+    
     return (
         <Modal
             animationType="fade"
             transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
+            visible={true}
             >
             <View style={styles.centeredView}>
             <View style={styles.modalView}>
                 <Image 
-                source={require('../images/checked.png')}  
+                source={require('../images/failed.png')}  
                 style={{width: 100, height: 100 }} 
                 />
-                <Text style={styles.msg}>¡Solicitud de compra realizado con exito!</Text>
+                <Text style={styles.msg}>{mensaje ? mensaje : '¡Solicitud de compra rechazada!'}</Text>
                 <Text
                 style={styles.btn}
                 onPress={() => {
-                    setModalVisible(false);
+                  navigation.navigate('Main');
                 }}>
-                Cerrar
+                Volver
                 </Text>
             </View>
             </View>
@@ -82,4 +83,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Pagado
+export default PagoError

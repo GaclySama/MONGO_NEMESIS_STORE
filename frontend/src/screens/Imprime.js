@@ -171,7 +171,7 @@ let generatePdf = async () => {
         leftIcon={require('../images/back.png')}
         title={'Movimientos de Cuenta'}
         onClickLeftIcon={() => {
-          navigation.goBack(); // navigation.navigate('Main') no funcionó
+          navigation.navigate('Main'); // navigation.navigate('Main') no funcionó
         }}
       />
         <FlatList
