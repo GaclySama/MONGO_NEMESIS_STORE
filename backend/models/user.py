@@ -1,12 +1,12 @@
 from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
 
 # * Modelo del usuario
-class User(BaseModel):
-    name: str = Field(...)
-    lastname: str = Field(...)
-    email: EmailStr = Field(...)
-    password: str = Field(...)
+class updateUser(BaseModel):
+    name: Optional[str] = Field(None)
+    lastname: Optional[str] = Field(None)
+    email: Optional[EmailStr] = Field(None)
 
 
 # * Modelo de datos para crear usuario

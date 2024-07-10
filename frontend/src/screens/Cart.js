@@ -65,25 +65,7 @@ const Cart = () => {
                 <Text style={styles.price}>{'$' + item.price}</Text>
                 </View>
                 <View style={styles.qtyview}>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={() => {
-                      if (item.qty > 1) {
-                        dispatch(reduceItemFromCart(item));
-                      } else {
-                        dispatch(removeItemFromCart(index));
-                      }
-                    }}>
-                    <Text style={{fontSize: 18, fontWeight: '600'}}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.qty}>{item.qty}</Text>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={() => {
-                      dispatch(addItemToCart(item));
-                    }}>
-                    <Text style={{fontSize: 18, fontWeight: '600'}}>+</Text>
-                  </TouchableOpacity>
+                  <Text style={styles.qty}>Cantidad: {item.qty}</Text>
                 </View>
               </View>
             </TouchableOpacity>

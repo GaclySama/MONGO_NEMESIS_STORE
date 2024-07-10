@@ -146,6 +146,18 @@ import Toast from 'react-native-toast-message';
     })
   };
 
+  const notificaErrorDisponible = async (titulo = 'Error al agregar producto', mensaje= 'No puede pasar el limite de disponible', time= 2000) => {
+    setTimeout(()=> {
+        Toast.show({
+            type:'error',
+            text1:titulo,
+            text2:mensaje,
+            autoHide: true,
+            visibilityTime: time,
+        })
+    })
+  };
+
 export {notificaErrorIngreso, 
         notificaErrorRegistro, 
         notificaInfo, 
@@ -157,5 +169,6 @@ export {notificaErrorIngreso,
         notificaAgregarProducto,
         notificaAgregarProductoError,
         notificaErrorActualizar,
-        notificaErrorAgregar
+        notificaErrorAgregar,
+        notificaErrorDisponible
       };

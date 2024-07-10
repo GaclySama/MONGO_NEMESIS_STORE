@@ -68,6 +68,30 @@ export const login = async (pEmail, pPassword) => {
     }
 }
 
+export const updateUser = async ({userId, name = null, lastname = null, email = null}) => {
+
+    data = {};
+
+    if ( name !== "") data.name = name;
+    if ( lastname !== "") data.lastname = lastname;
+    if ( email !== "") data.email = email;
+
+    try {
+        const res = await api.patch(`/user/update/${userId}`, data)
+
+        console.log(res);
+        return res.data;
+     } catch (error) {
+        if (error.response) {
+          console.error('Error al actualizar al usuario:', error.response.data.detail);
+          return { error: error.response.data.detail };
+        } else {
+          console.error('Unexpected error:', error.message);
+          return { error: 'Unexpected error occurred' };
+        }
+     }
+};
+
 
 export const loadUser = async () => {
   try {

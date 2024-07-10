@@ -4,9 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../common/Header';
 import { notificaErrorActualizar } from './tabs/Notification';
+import { useRoute } from '@react-navigation/native';
+import regExp from '../services/regExp';
+import { updateUser } from '../services/user'
+import { logout } from './LogOut';
 
 const Actualizar = () => {
 
+    const route = useRoute();
+    const userId = route.params?.id;
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useNavigation();
     const [name, setName] = useState('');
@@ -14,14 +20,15 @@ const Actualizar = () => {
     const [email, setEmail] = useState('');
     const [buttonDisabled, setButtonDisabled ] = useState(false);
     const [user, setUser] = useState({ email: '', name: '', lastname: ''});
+    const { regEmail, regName } = regExp;
 
     useEffect(() => {
         const loadUser = async () => {
           try {
             const userData = await AsyncStorage.getItem('@user');
             if (userData) {
-              const { email, name } = JSON.parse(userData);
-              setUser({ email, name });
+              const { email, name, lastname } = JSON.parse(userData);
+              setUser({ email, name, lastname });
             }
           } catch (error) {
             console.error('Failed to load user from AsyncStorage:', error);
@@ -33,14 +40,39 @@ const Actualizar = () => {
 
     //Validacion de dataentry
     const handlesubmit = () => {
-        if(name === '' && lastname === '' && email === ''){
-            notificaErrorActualizar();
-            setModalVisible(false);
-        }else{
-            //Si el usuario ingreso datos se mostrara la ventana modal
-            setModalVisible(true);
-        }  
+      if(!name.trim() && !lastname.trim() && !email.trim()){ notificaErrorActualizar(); setModalVisible(false); return};
+      if (name.trim() && !regName.test(name)) {notificaErrorActualizar(); setModalVisible(false); return}
+      if (lastname.trim() && !regName.test(lastname)) {notificaErrorActualizar(); setModalVisible(false); return}
+      if (email.trim() && !regEmail.test(email)) {notificaErrorActualizar(); setModalVisible(false); return}
+
+      //Si el usuario ingreso datos se mostrara la ventana modal
+      setModalVisible(true);
     }
+
+    const actualizarUsuario = async () => {
+      try {
+        const res = await updateUser({ userId, name, lastname, email });
+
+        if (res.error) {
+            console.error('Error al actualizar:', res.error);
+            alert(`Error actualizando usuario: ${res.error}`);
+            setModalVisible(false);
+        } else {
+            console.log('Usuario actualizado correctamente:', res);
+            
+            alert('Usuario actualizado correctamente');
+            // ! AQUI DEBE IR EL MENSAJE EMERGENTE !
+
+            logout();
+            navigation.navigate('Login');
+            setModalVisible(false);
+           
+        }
+      } catch (error) {
+          console.error('Unexpected error:', error);
+          alert('Error inesperado al actualizar el usuario');
+      }
+    };
 
     return (
     <View style={{flex:1}}>
@@ -82,14 +114,16 @@ const Actualizar = () => {
                             <TouchableOpacity
                                 style={styles.btnOpcion}
                                 onPress={() => {
-                                    //AL PRESIONAR SE CERRARA LA VENTANA MODAL 
-                                    setModalVisible(false);
+                                  // * SI
+                                    //AL PRESIONAR SE CERRARA LA VENTANA MODAL
+                                    actualizarUsuario();
                                 }}>
                                 <Text style={{color:'black', fontSize: 20, fontWeight: '500'}}>Si</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.btnOpcion}
                                 onPress={() => {
+                                  // ! NO
                                     //AL PRESIONAR SE CERRARA LA VENTANA MODAL
                                     setModalVisible(false);
                                 }}>
