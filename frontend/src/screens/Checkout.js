@@ -21,7 +21,6 @@ import {
 import CustomButton from '../common/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {orderItem} from '../redux/slices/OrderSlice';
-import Pagado from './OrdenPagado';
 import { loadUser } from '../services/user';
 import { createOrder } from '../services/order';
 import { getOrders } from '../services/order';
@@ -107,6 +106,7 @@ const Checkout = () => {
           try {
             const res = await getOrders(user._id);
             if (res.success) {
+              navigation.navigate('OrderSuccess');
               navigation.navigate('Imprime', { orders: res.data }); // ! Aqui retorta a imprime a ver si actualizaba el stock pero no
             } else {
               console.error(res.message || 'Error retrieving orders');
@@ -118,17 +118,18 @@ const Checkout = () => {
           }
           
         } else {
+          navigation.navigate('OrderFailed', {mensaje: res.message});
           console.error(res.message || 'Error al realizar la orden');
           // Aquí puedes mostrar un mensaje de error en la interfaz de usuario, si es necesario
         }
       } catch (error) {
         console.error('Unexpected error:', error);
         // Aquí puedes mostrar un mensaje de error en la interfaz de usuario, si es necesario
+        
       }
     }, 1000);
 
     dispatch(emptyCart([]));
-    navigation.navigate('OrderSuccess');
   };
   return (
     <View style={styles.container}>
@@ -190,9 +191,6 @@ const Checkout = () => {
               style={styles.checkout}
               onPress={() => {
                   orderPlace();
-                  // ! OJO
-                  <Pagado modalVisible={modalVisible} setModalVisible={setModalVisible}/>
-                
               }}>
               <Text style={{color: '#fff',fontWeight:'800'}}>Solicitar Compra</Text>
             </TouchableOpacity>
