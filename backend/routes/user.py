@@ -144,10 +144,8 @@ async def update_user(id: str, data: updateUser):
         if (dict_data['email']):
             exist = verify_email(dict_data['email'])
             if exist == None:
-              result = order_collection.update_one({"_id": ObjectId(id)}, {"$set": {"email": dict_data['email']}})
+              order_collection.update_one({"_id": ObjectId(id)}, {"$set": {"email": dict_data['email']}})
 
-              if result.matched_count == 0:
-                  raise HTTPException(status_code=404, detail="No se pudo actualizar")
             else: 
                 raise HTTPException(
                     status_code= status.HTTP_409_CONFLICT,

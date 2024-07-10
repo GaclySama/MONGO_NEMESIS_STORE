@@ -35,6 +35,7 @@ const Cart = () => {
     });
     return total.toFixed(0);
   };
+
   return (
     <View style={styles.container}>
       <Header
@@ -51,20 +52,30 @@ const Cart = () => {
             <TouchableOpacity
               activeOpacity={1}
               style={styles.productItem}
-              onPress={() => {
-                navigation.navigate('ProductDetail', {data: item});
-              }}>
+              >
               <Image source={{ uri: item.imagen }} style={styles.itemImage} />
-              <View style={{width: '100%',flexDirection:'row'}}>
-                <View style={{width:'55%'}}>
-                <Text style={styles.name}>
-                  {item.title/* .length > 25 */
-                    ? item.title.substring(0, 25) + '...'
-                    : item.title}
-                </Text>
-                <Text style={styles.price}>{'$' + item.price}</Text>
+              <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+                <View style={{flex: 0.55}}>
+                  <Text style={styles.name}>
+                    {item.title.length > 25
+                      ? item.title.substring(0, 25) + '...'
+                      : item.title}
+                  </Text>
+                  <Text style={styles.price}>{'$' + item.price}</Text>
                 </View>
                 <View style={styles.qtyview}>
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() => {
+                      if (item.qty > 1) {
+                        dispatch(reduceItemFromCart(item));
+                      } else {
+                        dispatch(removeItemFromCart(index));
+                      }
+                    }}
+                  >
+                    <Text style={{fontSize: 18, fontWeight: '600'}}>-</Text>
+                  </TouchableOpacity>
                   <Text style={styles.qty}>Cantidad: {item.qty}</Text>
                 </View>
               </View>
@@ -85,10 +96,11 @@ const Cart = () => {
 };
 
 export default Cart;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ff',
+    backgroundColor: '#fff',
   },
   productItem: {
     width: Dimensions.get('window').width,
@@ -97,29 +109,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     flexDirection: 'row',
+    paddingHorizontal: 10,
   },
   itemImage: {
     width: 50,
     height: 60,
-    left: 10
+    marginRight: 10,
   },
   name: {
     fontSize: 18,
     fontWeight: '600',
-    marginLeft: 20,
-  },
-  desc: {
-    marginLeft: 20,
   },
   price: {
     color: 'green',
     fontSize: 18,
     fontWeight: '600',
-    marginLeft: 20
   },
   qtyview: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    flex: 0.45,
+    justifyContent: 'flex-end',
   },
   btn: {
     padding: 5,
@@ -130,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   qty: {
-    marginHorizontal:10,
+    marginHorizontal: 10,
     fontSize: 18,
   },
   noItems: {

@@ -24,6 +24,7 @@ import {orderItem} from '../redux/slices/OrderSlice';
 import Pagado from './OrdenPagado';
 import { loadUser } from '../services/user';
 import { createOrder } from '../services/order';
+import { getOrders } from '../services/order';
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -94,8 +95,36 @@ const Checkout = () => {
     };
     dispatch(orderItem(data));
 
-    setTimeout(() => {
-      createOrder(data);
+    setTimeout(async () => {
+      try {
+        if (data['order'] == "") return;
+
+        const res = await createOrder(data);
+        // !! OJO AQUI
+        if (res.success) {
+          console.log(res.data); 
+
+          try {
+            const res = await getOrders(user._id);
+            if (res.success) {
+              navigation.navigate('Imprime', { orders: res.data }); // ! Aqui retorta a imprime a ver si actualizaba el stock pero no
+            } else {
+              console.error(res.message || 'Error retrieving orders');
+              // Aquí puedes mostrar un mensaje de error en la interfaz de usuario, si es necesario
+            }
+          } catch (error) {
+            console.error('Unexpected error:', error);
+            // Aquí puedes mostrar un mensaje de error en la interfaz de usuario, si es necesario
+          }
+          
+        } else {
+          console.error(res.message || 'Error al realizar la orden');
+          // Aquí puedes mostrar un mensaje de error en la interfaz de usuario, si es necesario
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
+        // Aquí puedes mostrar un mensaje de error en la interfaz de usuario, si es necesario
+      }
     }, 1000);
 
     dispatch(emptyCart([]));
@@ -155,22 +184,13 @@ const Checkout = () => {
           </Text>
         </View>
 
-        {/* <Button 
-          style={ styles.buttonCompra }
-          title={ 'Solicitar Compra' }
-          color={'green'}
-          onPress={() => {
-            orderPlace();
-            <Pagado modalVisible={modalVisible} setModalVisible={setModalVisible}/>
-          }}
-        /> */}
-
         <View style={styles.container2}>
           <View style={styles.tab}>
             <TouchableOpacity
               style={styles.checkout}
               onPress={() => {
                   orderPlace();
+                  // ! OJO
                   <Pagado modalVisible={modalVisible} setModalVisible={setModalVisible}/>
                 
               }}>
@@ -179,17 +199,6 @@ const Checkout = () => {
           </View>
         </View>
 
-
-        {/* <TouchableOpacity
-          style={styles.buttonCompra}
-          bg={'green'}
-          title={'Solicitar Compra'}
-          color={'#fff'}
-          onClick={() => {
-            orderPlace();
-            <Pagado modalVisible={modalVisible} setModalVisible={setModalVisible}/>
-          }}
-          /> */}
     </View>
   );
 };

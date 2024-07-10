@@ -21,6 +21,7 @@ import { notificaInfo, notificaInfoWishList, notificaErrorDisponible } from './t
 const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
   /* const [selectedTab, setSelectedTab] = useState(0); */
   const [selectedTab, setSelectedTab] = useState(0);
+  const items = useSelector(state => state.cart);
   const navigation = useNavigation();
   const route = useRoute();
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
                 setQty(qty + 1);
               }
                 if(qty === route.params.data.stock){
-                  notificaErrorDisponible();
+                  notificaErrorDisponible({titulo: undefined});
               }
               }}>
               <Text style={{fontSize: 24, fontWeight: '600',color:'white'}}>+</Text>
@@ -109,6 +110,23 @@ const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
           title={'Agregar al carrito'}
           color={'#fff'}
           onClick={() => {
+
+            // ! Filtro para no repasar el stock
+            if (items.data) {
+              let add = true;
+              items.data.forEach(i => {
+                if (i['id'] == route.params.data._id) {
+                  if (i['qty'] >= route.params.data.stock) {
+                    notificaErrorDisponible({mensaje: 'No hay más en stock'});
+                    setQty(route.params.data.stock)
+                    add = false;
+                  }
+                }
+              });
+
+              if (!add) return;
+            }
+
             notificaInfo();
             if (checkUserStatus()) {
               dispatch(

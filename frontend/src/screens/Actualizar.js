@@ -40,10 +40,10 @@ const Actualizar = () => {
 
     //Validacion de dataentry
     const handlesubmit = () => {
-      if(!name.trim() && !lastname.trim() && !email.trim()){ notificaErrorActualizar(); setModalVisible(false); return};
-      if (name.trim() && !regName.test(name)) {notificaErrorActualizar(); setModalVisible(false); return}
-      if (lastname.trim() && !regName.test(lastname)) {notificaErrorActualizar(); setModalVisible(false); return}
-      if (email.trim() && !regEmail.test(email)) {notificaErrorActualizar(); setModalVisible(false); return}
+      if(!name.trim() && !lastname.trim() && !email.trim()){ notificaErrorActualizar({mensaje: 'No se modificó nungún campo'}); setModalVisible(false); return};
+      if (name.trim() && !regName.test(name)) {notificaErrorActualizar({mensaje: 'Nombre no válido'}); setModalVisible(false); return}
+      if (lastname.trim() && !regName.test(lastname)) {notificaErrorActualizar({mensaje: 'Apellido no válido'}); setModalVisible(false); return}
+      if (email.trim() && !regEmail.test(email)) {notificaErrorActualizar({mensaje: 'Email no válido'}); setModalVisible(false); return}
 
       //Si el usuario ingreso datos se mostrara la ventana modal
       setModalVisible(true);
@@ -69,7 +69,7 @@ const Actualizar = () => {
            
         }
       } catch (error) {
-          console.error('Unexpected error:', error);
+          console.log('Unexpected error:', error);
           alert('Error inesperado al actualizar el usuario');
       }
     };
