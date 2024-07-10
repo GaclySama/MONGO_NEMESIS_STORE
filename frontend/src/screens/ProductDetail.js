@@ -16,7 +16,7 @@ import {addItemToWishlist} from '../redux/slices/WishlistSlice';
 import {addItemToCart} from '../redux/slices/CartSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AskForLoginModal from '../common/AskForLoginModal';
-import { notificaInfo, notificaInfoWishList } from './tabs/Notification';
+import { notificaInfo, notificaInfoWishList, notificaErrorDisponible } from './tabs/Notification';
 
 const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
   /* const [selectedTab, setSelectedTab] = useState(0); */
@@ -91,8 +91,12 @@ const ProductDetail = ({ isWishlistActive, toggleWishlist }) => {
             <TouchableOpacity
               style={styles.btnGreen}
               onPress={() => {
-                if ( qty < route.params.data.stock )
+                if ( qty < route.params.data.stock ){
                 setQty(qty + 1);
+              }
+                if(qty === route.params.data.stock){
+                  notificaErrorDisponible();
+              }
               }}>
               <Text style={{fontSize: 24, fontWeight: '600',color:'white'}}>+</Text>
             </TouchableOpacity>
