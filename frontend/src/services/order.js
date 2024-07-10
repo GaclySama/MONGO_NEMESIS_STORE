@@ -6,11 +6,15 @@ export const createOrder = async (data) => {
 
   try {
     const res = await api.put('/order/create', data)
-    getProducts()
-    //console.log(res);
-    return res;
-  } catch (error) { 
-      console.log(error);
+    getProducts();
+    return { success: true, data: res.data };
+  } catch (error) {
+    // Manejar diferentes tipos de errores
+    if (error.response && error.response.status === 404) {
+      return { success: false, message: 'No tienes pedidos' };
+    } else {
+      return { success: false, message: 'An error occurred while fetching orders' };
+    }
   }
 }
 
@@ -21,7 +25,7 @@ export const getOrders = async (id) => {
   } catch (error) {
     // Manejar diferentes tipos de errores
     if (error.response && error.response.status === 404) {
-      return { success: false, message: 'Order not found' };
+      return { success: false, message: 'No tienes pedidos' };
     } else {
       return { success: false, message: 'An error occurred while fetching orders' };
     }

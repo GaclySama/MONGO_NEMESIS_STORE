@@ -122,7 +122,7 @@ import Toast from 'react-native-toast-message';
     })
   };
 
-  const notificaErrorActualizar = async (titulo = 'Error al Actualizar', mensaje= 'No ha ingresado ninguna información', time= 2000) => {
+  const notificaErrorActualizar = async ({titulo = 'Error al Actualizar', mensaje= 'No ha ingresado ninguna información', time= 2000}) => {
     setTimeout(()=> {
         Toast.show({
             type:'error',
@@ -145,8 +145,7 @@ import Toast from 'react-native-toast-message';
         })
     })
   };
-
-  const notificaErrorDisponible = async (titulo = 'Error al agregar producto', mensaje= 'No puede pasar el limite de disponible', time= 2000) => {
+  const notificaErrorDisponible = async ({titulo = 'Error al agregar producto', mensaje= 'No puede pasar el limite de disponible', time= 2000}) => {
     setTimeout(()=> {
         Toast.show({
             type:'error',
@@ -158,17 +157,17 @@ import Toast from 'react-native-toast-message';
     })
   };
 
-export {notificaErrorIngreso, 
-        notificaErrorRegistro, 
-        notificaInfo, 
-        notificaSuccessIngreso, 
-        notificaSuccessRegistro, 
-        notificaInfoRecover,  
-        notificaInfoNoRecover,
-        notificaInfoWishList,
-        notificaAgregarProducto,
-        notificaAgregarProductoError,
-        notificaErrorActualizar,
-        notificaErrorAgregar,
-        notificaErrorDisponible
-      };
+  export {notificaErrorIngreso, 
+    notificaErrorRegistro, 
+    notificaInfo, 
+    notificaSuccessIngreso, 
+    notificaSuccessRegistro, 
+    notificaInfoRecover,  
+    notificaInfoNoRecover,
+    notificaInfoWishList,
+    notificaAgregarProducto,
+    notificaAgregarProductoError,
+    notificaErrorActualizar,
+    notificaErrorAgregar,
+    notificaErrorDisponible
+  };
