@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import { loadUser } from '../../services/user';
 import { getOrders } from '../../services/order';
 import * as ImagePicker from 'expo-image-picker'
+import { logout } from '../LogOut'
 
 
 const User = () => {
@@ -41,14 +42,10 @@ const User = () => {
     }
   };
 
-  const logout = async () => {
-    try {
-      const keys = ['@accessToken', '@user', '@products']
-      await AsyncStorage.multiRemove(keys);
+  const salir =  () => {
+
       navigation.navigate('Login');
-    } catch (error) {
-      console.error('Failed to logout:', error);
-    }
+      logout();
   };
 
   //Image Picker
@@ -91,7 +88,7 @@ const User = () => {
       {/* //VALOR DE IMAGEN <Text>{image}</Text> */}
       <TouchableOpacity style={[styles.tab, {marginTop: 30}]}
         onPress={() => {
-          navigation.navigate('Actualizar');
+          navigation.navigate('Actualizar', {id: user._id});
         }}>
         <Text style={styles.txt}>Editar Perfil</Text>
       </TouchableOpacity>
@@ -104,7 +101,7 @@ const User = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.tab, {marginTop: 10}]}
-        onPress={logout}>
+        onPress={salir}>
         <Text style={styles.txt}>Cerrar sesión</Text>
       </TouchableOpacity>
     </View>

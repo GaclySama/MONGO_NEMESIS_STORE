@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
-from models.user import SingUpSchema, LoginSchema, User
+from models.user import SingUpSchema, LoginSchema, User, updateUser
 from config.config import database
 from passlib.context import CryptContext
+from bson.objectid import ObjectId
 import logging
 
 # * Creación de router para usuario
@@ -11,7 +12,8 @@ router = APIRouter(
     tags=["User"],
 )
 
-collection = database["user"]
+user_collection = database["user"]
+order_collection = database["orders"]
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 logger = logging.getLogger(__name__)
 
@@ -25,7 +27,7 @@ def create_user_in_mongo( user_data: SingUpSchema  ):
           "password": hash_password(user_data.password),  
       }
 
-      result = collection.insert_one( data ).inserted_id
+      result = user_collection.insert_one( data ).inserted_id
       return str( result )
     except Exception as e:
         logger.error(f"Error create_user_in_mongo: {e}")
@@ -45,7 +47,7 @@ def verify_password(plain_password, hashed_password):
 # * Verifica el email
 def verify_email( email: str ):
     try:
-        user_data = collection.find_one({'email': email})
+        user_data = user_collection.find_one({'email': email})
 
         if not user_data:
            return None
@@ -127,4 +129,46 @@ async def sing_in(login_data: LoginSchema):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error: {e}"
         )
+
+# TODO: ACTUALIZAR USUARIO       
+@router.patch("/update/{id}")
+async def update_user(id: str, data: updateUser):
+    try:
+        dict_data = data.model_dump()
+        update_data = {}
+
+        for key in dict_data:
+            if dict_data[key] != None:
+                update_data[key] = dict_data[key]
+
+        if (dict_data['email']):
+            exist = verify_email(dict_data['email'])
+            if exist == None:
+              result = order_collection.update_one({"_id": ObjectId(id)}, {"$set": {"email": dict_data['email']}})
+
+              if result.matched_count == 0:
+                  raise HTTPException(status_code=404, detail="No se pudo actualizar")
+            else: 
+                raise HTTPException(
+                    status_code= status.HTTP_409_CONFLICT,
+                    detail='Ya existe una cuenta con ese email'
+                )
+
+        result = user_collection.update_one({"_id": ObjectId(id)}, {"$set": update_data})
+
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="No se pudo actualizar")
         
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content='Campos actualizados'
+        )
+    
+    except HTTPException as e:
+        logger.error(f"Error update_user: {e}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    except Exception as e:
+        logger.error(f"Error update_user: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error: {e}"
+        )
